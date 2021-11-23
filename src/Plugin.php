@@ -64,7 +64,16 @@ final class Plugin implements HandlesArguments
         }
 
         $loop    = Factory::create();
-        $watcher = new Watch($loop, $this->watchedDirectories);
+
+        $monitor = null;
+
+        if (getenv('WSL_DISTRO_NAME') !== false) {
+            $monitor = 'poll_monitor';
+            $this->output->writeln('Using poll monitor on WSL, performance maybe degraded');
+        }
+
+        $watcher = new Watch($loop, $this->watchedDirectories, $monitor);
+        
         $watcher->run();
 
         $command = implode(' ', $originals);

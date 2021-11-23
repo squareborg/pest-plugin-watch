@@ -38,10 +38,12 @@ final class Watch implements EventEmitterInterface
      *
      * @return void
      */
-    public function __construct(LoopInterface $loop, array $folders)
+    public function __construct(LoopInterface $loop, array $folders, string|null $monitor)
     {
         $this->loop    = $loop;
-        $this->command = sprintf('fswatch --recursive %s', implode(' ', $folders));
+        $this->command = sprintf(
+            'fswatch %s --recursive %s', !is_null($monitor) ? "-m" . $monitor : '', implode(' ', $folders)
+        );
     }
 
     /**
